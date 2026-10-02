@@ -26,7 +26,15 @@ A project has a record when `tools/record-config.json` exists.
 
 ## Set-up (once per project)
 
-1. **Ask where the notebook lives** — one question, never a guess: `docs/notebook/` (the default, committed with the project) or another folder, such as one inside the user's Obsidian vault.
+1. **Ask where the notebook lives** — one question, never a guess. The choice is the user's; offer these three:
+   - **A folder in the project** — `docs/notebook/`, the default. Committed with the project.
+   - **A link in the project that points somewhere else** — for example `notebook/` at the project root, linked to a folder in their Obsidian vault. The pages then show up in Obsidian while the project still reaches them by a short relative path. Always mention this one; it is easy to miss.
+   - **Any other folder**, by its full path.
+
+   Making the link, if they choose it — create it only when they ask you to, otherwise give them the command:
+   - Windows, PowerShell: `New-Item -ItemType Junction -Path notebook -Target "D:\path\to\vault\folder"`. A junction needs no administrator rights. A symbolic link (`-ItemType SymbolicLink`) needs Developer Mode or an elevated shell.
+   - macOS and Linux: `ln -s "/path/to/vault/folder" notebook`
+   - Add the link to `.gitignore` unless they want the pages committed with the project.
 2. **Copy the templates** from `templates/`, next to this file. Never overwrite a file that already exists.
    - `templates/tools/*` → `<project>/tools/`
    - `templates/record/*` → `<project>/docs/record/`
@@ -35,7 +43,7 @@ A project has a record when `tools/record-config.json` exists.
    - `{{PROJECT_NAME}}` and `{{PROJECT_TAGLINE}}` (one sentence — from the README if it has one, otherwise ask) in `tools/record-config.json`, `dev-log/dev-log-template.html` and both `.bat` files
    - `{{BOARD_PATH}}` in `open-roadmap.bat`: the absolute path of `tools/roadmap_board.py`
    - `{{BUILDER_PATH}}` in `dev-log/rebuild-dev-log.bat`: the absolute path of `tools/build_dev_log.py`
-4. **Point the configs at the folder.** If the notebook is not `docs/notebook/`, change `notebook` in `tools/record-config.json` and the four paths in `tools/dev-log-config.json`. Paths are relative to the config file, or absolute.
+4. **Point the configs at the folder.** If the notebook is not `docs/notebook/`, change `notebook` in `tools/record-config.json` and the four paths in `tools/dev-log-config.json`. Paths are relative to the config file, or absolute. For a link inside the project, write the link's own path (`../notebook`), not the folder it points to: the tools follow it.
 5. **Check the dev-log builder's packages:** `python -c "import bs4, markdown_it, yaml"`. If that fails, ask before installing (rule 7), then `python -m pip install -r tools/requirements-dev-log.txt`. The record tools need only the standard library.
 6. **Seed the record:** a card for each piece of work that is known, and an entry for each decision already made — including where the notebook lives.
 7. **Write dev-log entry 001** (DEV-LOG.md), then build: `python tools/build_dev_log.py`, then `python tools/build_record.py`.

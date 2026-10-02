@@ -30,6 +30,8 @@ The hooks and tools run with `python` (3.10 or newer) on your PATH.
 | **Research reports** — short answer, findings, options, issues and ways round them | linked from the record entry and the card |
 | **Dev-log** — the story of the project, in your voice | Markdown entries, one per decision or milestone |
 
+You choose where the notebook lives, once per project: a folder in the project (`docs/notebook/` by default), any other folder, or a link in the project that points into your Obsidian vault — so the pages appear in Obsidian while the project still sees them next to the code.
+
 The JSON is the single source of truth. `python tools/build_record.py` checks every id and cross-reference and regenerates the pages; a broken reference fails the build instead of producing a wrong page.
 
 ### The roadmap board
@@ -80,3 +82,7 @@ python skills/principles/templates/tools/project_record.py --config tools/record
 ```bash
 claude plugin uninstall emzakit@emzakit
 ```
+
+## Licence
+
+MIT — see [LICENSE](LICENSE).

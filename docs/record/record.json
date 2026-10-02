@@ -157,13 +157,16 @@
   {
     "id": "D-012",
     "date": "2026-10-02",
-    "title": "Which licence, if any?",
-    "status": "open",
-    "summary": "Open: the repo is public and has no licence file, so nobody else may legally reuse it. Choose one (MIT is the usual permissive choice) or leave it all-rights-reserved.",
-    "decision": "Option A: MIT. Option B: another licence. Option C: no licence; the code stays visible but not reusable.",
+    "title": "The licence is MIT",
+    "status": "decided",
+    "summary": "The repo is MIT-licensed: anyone may reuse it as long as the copyright notice stays.",
+    "decision": "A LICENSE file with the MIT text, copyright emzakit, and the licence named in plugin.json.",
     "roadmap": [
       "R-009"
-    ]
+    ],
+    "decided_by": "user",
+    "reason": "The repo is public; without a licence nobody else could legally reuse it.",
+    "alternatives": "Another licence; no licence, leaving the code visible but not reusable."
   },
   {
     "id": "D-013",
@@ -174,6 +177,19 @@
     "decision": "Option A: docs/notebook in this repo. Option B: a folder in the Obsidian vault. Then entry 001 is written and shown for correction.",
     "roadmap": [
       "R-008"
+    ]
+  },
+  {
+    "id": "D-014",
+    "date": "2026-10-02",
+    "title": "Set-up offers a notebook link into Obsidian",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "The notebook's location stays the user's choice per project, and set-up always mentions the option of a link in the project that points into an Obsidian vault, as Total War Chess does.",
+    "decision": "NOTEBOOK.md step 1 offers three choices: a folder in the project, a link in the project pointing elsewhere, or any other folder. It gives the command for a Windows junction and for a symbolic link, and says to ignore the link in git unless the pages should be committed. The configs hold the link's own path; the tools follow it.",
+    "reason": "A link keeps the pages in Obsidian and the paths in the project short, and it is easy to miss.",
+    "roadmap": [
+      "R-004"
     ]
   }
 ]

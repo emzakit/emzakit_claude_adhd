@@ -58,9 +58,9 @@
   {
     "id": "R-009",
     "title": "Choose a licence",
-    "status": "todo",
+    "status": "done",
     "date": "2026-10-02",
-    "note": "Waiting on D-012."
+    "note": "MIT. See D-012."
   },
   {
     "id": "R-010",
