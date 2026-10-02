@@ -1,0 +1,15 @@
+{
+  "categories": [
+    {"name": "Feature", "colour": "#7cc4f0"},
+    {"name": "UI", "colour": "#c9a0f0"},
+    {"name": "Bug", "colour": "#f08a8a"},
+    {"name": "Refactor", "colour": "#e0c070"},
+    {"name": "Docs", "colour": "#8fd6a8"},
+    {"name": "Tooling", "colour": "#a6bdcb"}
+  ],
+  "flags": [
+    {"name": "High priority", "colour": "#ff6b6b"},
+    {"name": "Medium priority", "colour": "#f0b860"},
+    {"name": "Low priority", "colour": "#7fbf8f"}
+  ]
+}

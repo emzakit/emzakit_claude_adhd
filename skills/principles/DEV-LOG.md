@@ -33,7 +33,7 @@ Routine fixes and small features get no entry. If you are unsure, put the propos
    - **Voice:** follow `writers-voice.md`, next to this file — conversational and dry. The facts carry the entry; one or two dry lines season it. Never invent an event for the sake of a joke.
    - Plain, complete sentences. No compressed or note-form style, whatever style the chat is in.
 4. End with the folding sources note: `> [!note]- Sources and status`, then links to the evidence (`../project-record.html#D-014`, `../roadmap.html#R-002`, a research report, test output, a commit) and one line on what is still untested or undecided. Links are relative to `dev-log.html`, not to the Markdown file.
-5. Rebuild: `python tools/build_dev_log.py`, then `python tools/build_record.py` if a record entry now points at this one. `--check` on either reports a stale page without writing.
+5. Rebuild: `python tools/build_dev_log.py`, then `python tools/build_record.py` if a record entry now points at this one (`python3` on macOS and Linux). The `rebuild-dev-log` launcher in `tools/` runs both — `.bat` on Windows, `.command` on macOS, `.sh` on Linux — and is what the human double-clicks. `--check` on either builder reports a stale page without writing.
 6. Because the entry speaks as the user, show its text in the final report so they can correct it.
 
 ## When the build fails

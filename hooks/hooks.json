@@ -6,7 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/inject_context.py\" SessionStart",
+            "shell": "bash",
+            "command": "py=python3; python3 -c '' 2>/dev/null || py=python; \"$py\" \"${CLAUDE_PLUGIN_ROOT}/hooks/inject_context.py\" SessionStart",
             "timeout": 10,
             "statusMessage": "Loading the principles and the project record"
           }
@@ -18,7 +19,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/inject_context.py\" SubagentStart",
+            "shell": "bash",
+            "command": "py=python3; python3 -c '' 2>/dev/null || py=python; \"$py\" \"${CLAUDE_PLUGIN_ROOT}/hooks/inject_context.py\" SubagentStart",
             "timeout": 10,
             "statusMessage": "Loading the principles"
           }
@@ -31,7 +33,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/check_file_length.py\"",
+            "shell": "bash",
+            "command": "py=python3; python3 -c '' 2>/dev/null || py=python; \"$py\" \"${CLAUDE_PLUGIN_ROOT}/hooks/check_file_length.py\"",
             "timeout": 10,
             "statusMessage": "Checking file length (rule 3)"
           }

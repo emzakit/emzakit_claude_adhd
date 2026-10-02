@@ -17,5 +17,23 @@
     "title": "Archive old diary entries",
     "summary": "When record.json grows past a few hundred entries, move the oldest into a yearly archive file that the digest skips and the page still shows.",
     "checkpoint": "The digest no longer fits in one screen, or the session-start hook becomes slow."
+  },
+  {
+    "id": "IDEA-003",
+    "date": "2026-10-02",
+    "origin": "agent",
+    "status": "open",
+    "title": "Filter the board by category or flag",
+    "summary": "A row of chips above the board that hides every card without the chosen category or flag.",
+    "checkpoint": "The board holds more cards than fit on one screen."
+  },
+  {
+    "id": "IDEA-004",
+    "date": "2026-10-02",
+    "origin": "agent",
+    "status": "open",
+    "title": "Open Obsidian notes from a card",
+    "summary": "Allow obsidian:// links next to http and https, so a card can open a note in the vault.",
+    "checkpoint": "The owner wants a card to point at a vault note rather than a file."
   }
 ]

@@ -57,7 +57,7 @@ Git records *what* changed. The record holds *why*, *status* and *next*. It has 
   - `roadmap.json` — the cards on the roadmap board (`R-001`): Issues, Research, To do, In progress, Done, Abandoned. A card in progress says in its `note` where the work stands and what the next step is. Cards are never deleted; abandoned ones say why.
   - `ideas.json` — possibilities nobody has approved (`IDEA-001`). An idea in the catalogue is not permission to build it.
 - **For the human: the notebook.** Clean HTML pages generated from the JSON by `python tools/build_record.py` — home, project record, roadmap board, ideas catalogue — plus research reports and the dev-log. Anything written for the human to read is an HTML page in the notebook, never raw JSON or Markdown. Never edit a generated page.
-- The roadmap board is the human's too: they move, add and edit cards themselves (`open-roadmap.bat`). Read the board as it is; never undo their moves.
+- The roadmap board is the human's too: they move, add and edit cards themselves (the `open-roadmap` launcher in `tools/`). Read the board as it is; never undo their moves.
 - Read the digest before starting any task: `python tools/project_record.py` prints the board, what is waiting on the human, and one line per decision. Open a full entry only when its summary says you need it.
 - A decision is the human's unless they delegated it. Record who decided (`decided_by`). An agent's proposal stays an open entry or an idea until the human approves it.
 - The dev-log — the story of the project for a human reader, in the first person and the present tense: one numbered Markdown entry per decision, change of direction, experiment result or milestone. Routine tasks get no entry.

@@ -2,30 +2,36 @@
 
 Reads docs/record through project_record.py (which validates it) and writes
 four pages into the notebook: the home page, the project record, the roadmap
-board and the ideas catalogue. Standard library only.
+board and the ideas catalogue. It also copies tools/assets (the theme, the
+board's script and stylesheet) into the notebook's assets folder, so the
+notebook works on any machine after one build. Standard library only.
 
-    python tools/build_record.py          validate the record and rebuild stale pages
-    python tools/build_record.py --check  report stale pages without writing
+    python tools/build_record.py          validate the record and rebuild stale pages and assets
+    python tools/build_record.py --check  report stale pages and assets without writing
 """
 
 from __future__ import annotations
 
 import argparse
 from datetime import date
-from html import escape
+from html import escape, unescape
 import json
 from pathlib import Path
 import re
 import sys
 
-from project_record import CARD_STATUS, CONFIG, ID, RecordError, load, read_config, reversed_by
+from project_record import CARD_STATUS, CONFIG, ID, NAME_LIMIT, RecordError, load, read_config, reversed_by
 
 ID_PAGE = {"R": "roadmap.html", "D": "project-record.html", "IDEA": "ideas-catalogue.html"}
 NAV = (("Notebook", "index.html"), ("Project record", "project-record.html"),
        ("Roadmap", "roadmap.html"), ("Ideas", "ideas-catalogue.html"))
 DEV_LOG = ("Dev-log", "dev-log/dev-log.html")
+ASSETS = Path(__file__).resolve().parent / "assets"  # travel with the tools; copied into the notebook by write_pages
+# The files the pages link to. A build fails if one is absent from ASSETS.
+THEME, BOARD_STYLE, BOARD_SCRIPT = REQUIRED_ASSETS = ("legend-theme.css", "roadmap-board.css", "roadmap-board.js")
 
-# Every word the reader sees that is not taken from the record.
+# The words the reader sees that are not taken from the record. Page titles, the search tools and the board's
+# dialogs hold their own static labels in the markup next to them (NAV, SEARCH, BOARD_DIALOG).
 TEXT = {
     "user": "User decision", "agent": "Agent decision", "open": "Open question", "reversed": "Reversed",
     "idea_open": "Open", "idea_adopted": "Adopted", "idea_parked": "Parked", "idea_dropped": "Dropped",
@@ -38,9 +44,15 @@ TEXT = {
                   "Nothing here is approved just because it is written down.",
     "board_lead": "What is planned, in progress, done and abandoned. Issues holds known problems. "
                   "A card in Research is researched at the next Claude session.",
-    "report": "Read the report",
-    "board_locked": "Read-only. Double-click open-roadmap.bat in the notebook folder to move, add or edit cards.",
-    "board_open": "Drag a card to move it. Changes save straight away.",
+    "manage": "Categories and flags",
+    # Handed to assets/roadmap-board.js with the cards: every label the board script shows.
+    "board_text": {
+        "locked": "Read-only. Run the open-roadmap launcher in the project's tools folder to move, add or edit cards.",
+        "open": "Drag a card to move it. Changes save straight away.",
+        "report": "Read the report", "add_card": "+ Add card", "edit": "Edit",
+        "saved": "Saved.", "not_saved": "Not saved: ",
+        "opened": "Opened ", "revealed": "Shown in folder: ", "not_opened": "Not opened: ",
+    },
     "waiting": "Waiting on your decision", "in_progress": "In progress", "latest": "Latest decisions",
     "reports": "Research", "more": "Read more", "nothing": "Nothing recorded yet.",
     "generated": "Built from <code>docs/record</code> by <code>tools/build_record.py</code>. "
@@ -82,33 +94,25 @@ SEARCH_SCRIPT = """<script>
 })();
 </script>"""
 
-BOARD_STYLE = """<style>
-  body { max-width: none; margin: 44px 32px; }
-  #board { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; align-items: start; }
-  .column { border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-height: 180px; }
-  .column.over { border-color: var(--gold); }
-  .column h2 { font: 650 17px/1.3 var(--body); letter-spacing: 0; margin: 0 0 12px; }
-  .column h2 span { color: var(--muted); font-weight: 400; }
-  .card { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 0 0 10px; }
-  .card[draggable="true"] { cursor: grab; }
-  .card.dragging { opacity: .4; }
-  .card h3 { font: 650 15px/1.4 var(--body); margin: 4px 0; }
-  .card p { font-size: 14px; line-height: 1.5; margin: 6px 0 0; }
-  .card button, .column > button { font-size: 12px; padding: 5px 12px; margin-top: 10px; }
-  dialog { background: var(--night); color: var(--text); border: 1px solid var(--line); border-radius: 10px;
-           padding: 24px; width: min(520px, 92vw); }
-  dialog::backdrop { background: rgba(0, 0, 0, .7); }
-  dialog label { display: block; margin: 0 0 14px; font-size: 14px; }
-  dialog input, dialog textarea, dialog select { display: block; width: 100%; margin-top: 6px; padding: 10px 12px;
-           border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--heading); }
-  dialog textarea { min-height: 110px; font: 15px/1.5 var(--body); }
-</style>"""
-BOARD_DIALOG = """<dialog id="card-dialog"><form method="dialog">
+# The board's markup. assets/roadmap-board.js fills the selects, the flag boxes and the rows from the board data,
+# and depends on the order here: "+ Add …" is the last child of its fieldset, and a row is name, colour, Remove.
+BOARD_DIALOG = f"""<dialog id="card-dialog"><form method="dialog">
 <label>Title<input name="title" required maxlength="200" /></label>
 <label>Note — where it stands, the next step, or why it was abandoned<textarea name="note"></textarea></label>
 <label>Column<select name="status"></select></label>
-<button value="cancel" formnovalidate>Cancel</button> <button value="save">Save</button>
-</form></dialog>"""
+<label>Category<select name="category"><option value="">None</option></select></label>
+<fieldset id="card-flags"><legend>Flags</legend></fieldset>
+<label>Links and files — one per line<textarea name="links"></textarea></label>
+<button type="button" value="cancel">Cancel</button> <button value="save">Save</button>
+</form></dialog>
+<dialog id="manage-dialog"><form method="dialog">
+<fieldset data-list="categories"><legend>Categories</legend><button type="button">+ Add category</button></fieldset>
+<fieldset data-list="flags"><legend>Flags</legend><button type="button">+ Add flag</button></fieldset>
+<button type="button" value="cancel">Cancel</button> <button value="save">Save</button>
+</form></dialog>
+<template id="manage-row"><div class="manage-row">
+<input required maxlength="{NAME_LIMIT}" pattern=".*\\S.*" aria-label="Name" />
+<input type="color" value="#a6bdcb" aria-label="Colour" /><button type="button">Remove</button></div></template>"""
 
 
 def human(iso: str) -> str:
@@ -144,7 +148,7 @@ def record_page(data: dict) -> str:
         if entry["id"] in undone:
             kind += " reversed"
             badge += f' <span class="badge history">{TEXT["reversed"]}</span>'
-        links = "".join(f'<p><a href="{href}">{TEXT[key]}</a></p>' for key, href in (
+        links = "".join(f'<p><a href="{escape(href, quote=True)}">{TEXT[key]}</a></p>' for key, href in (
             ("research", f"research/{entry.get('research')}.html"),
             ("dev_log", f"dev-log/dev-log.html#{entry.get('dev_log')}")) if key in entry)
         facts = "".join(field(key, entry.get(key)) for key in ("reason", "alternatives", "reverses", "roadmap"))
@@ -159,13 +163,15 @@ def record_page(data: dict) -> str:
 
 
 def roadmap_page(data: dict) -> str:
-    payload = {"columns": list(CARD_STATUS.items()), "cards": data["roadmap"],
-               "locked": TEXT["board_locked"], "open": TEXT["board_open"], "report": TEXT["report"]}
+    payload = {"columns": list(CARD_STATUS.items()), "cards": data["roadmap"], "board": data["board"],
+               "text": TEXT["board_text"]}
     # "<" could end the script element early; JSON allows the escaped form.
     embedded = json.dumps(payload, ensure_ascii=False).replace("<", "\\u003c")
-    return (f'{BOARD_STYLE}<p>{TEXT["board_lead"]}</p><p id="board-status" class="search-status" aria-live="polite">'
-            f'</p><div id="board"></div>{BOARD_DIALOG}<script type="application/json" id="board-data">{embedded}'
-            f'</script><script src="assets/roadmap-board.js"></script>')
+    return (f'<link rel="stylesheet" href="assets/{BOARD_STYLE}" /><p>{TEXT["board_lead"]}</p>'
+            f'<p id="board-status" class="search-status" aria-live="polite"></p>'
+            f'<p><button type="button" id="manage-open" hidden>{TEXT["manage"]}</button></p>'
+            f'<div id="board"></div>{BOARD_DIALOG}<script type="application/json" id="board-data">{embedded}'
+            f'</script><script src="assets/{BOARD_SCRIPT}"></script>')
 
 
 def ideas_page(data: dict) -> str:
@@ -182,12 +188,12 @@ def ideas_page(data: dict) -> str:
 
 
 def research_reports(notebook: Path) -> list[tuple[str, str]]:
-    """(file name, page title) of each research report, newest first by file name."""
+    """(file name, page title) of each research report, newest first by file name. Both are plain text."""
     reports = []
     for path in sorted((notebook / "research").glob("*.html"), reverse=True):
         if path.stem != "research-template":
             title = re.search(r"<title>(.*?)</title>", path.read_text(encoding="utf-8"), re.S)
-            reports.append((path.name, title[1].strip() if title else escape(path.stem)))
+            reports.append((path.name, unescape(title[1].strip()) if title else path.stem))
     return reports
 
 
@@ -207,7 +213,7 @@ def index_page(config: dict, data: dict, nav: tuple) -> str:
                              f'{human(entry["date"])} — {rich(entry["summary"])}'
                              + (f' <span class="badge history">{TEXT["reversed"]}</span>' if entry["id"] in undone else "")
                              for entry in decided])
-        + section("reports", [f'<a href="research/{name}">{title}</a>'
+        + section("reports", [f'<a href="research/{escape(name, quote=True)}">{escape(title)}</a>'
                               for name, title in research_reports(config["notebook"])])
         + section("more", [f'<a href="{href}">{label}</a>' for label, href in nav[1:]]))
 
@@ -226,18 +232,32 @@ def build(config: dict, data: dict) -> dict[str, str]:
         "<!doctype html>\n<!-- Generated by tools/build_record.py from docs/record. Do not edit. -->\n"
         f'<html lang="en"><head><meta charset="utf-8" />'
         f'<meta name="viewport" content="width=device-width,initial-scale=1" />'
-        f'<title>{project} · {title}</title><link rel="stylesheet" href="assets/legend-theme.css" /></head>\n'
+        f'<title>{project} · {title}</title><link rel="stylesheet" href="assets/{THEME}" /></head>\n'
         f'<body><nav>{links}</nav><p class="chapter">{project}</p><h1>{title}</h1>\n{body}\n'
         f'<p class="foot">{TEXT["generated"]}</p></body></html>\n'
     ) for name, (title, body) in bodies.items()}
 
 
+def assets(notebook: Path) -> dict[Path, bytes]:
+    """The notebook's assets folder as it should be: a copy of every file in the tools' assets folder."""
+    for name in REQUIRED_ASSETS:
+        if not (ASSETS / name).is_file():
+            raise RecordError(f"{ASSETS / name} is missing; copy the tools folder again from the emzakit plugin")
+    return {notebook / "assets" / path.name: path.read_bytes() for path in ASSETS.iterdir() if path.is_file()}
+
+
 def write_pages(config: dict, check: bool = False) -> int:
-    """Validate the record and rewrite the pages that changed. Returns how many were stale."""
+    """Validate the record and rewrite the pages and assets that changed. Returns how many were stale."""
     pages = {config["notebook"] / name: text.encode("utf-8") for name, text in build(config, load(config)).items()}
+    pages.update(assets(config["notebook"]))
+    # The notebook folder itself may be a link (into a vault). Nothing inside it is written through one:
+    # a cloned project could otherwise point a page at any file this user can write.
+    for path in (config["notebook"] / "assets", *pages):
+        if path.is_symlink():
+            raise RecordError(f"{path} is a symbolic link; the builder does not write through one")
     stale = [path for path, content in pages.items() if not path.is_file() or path.read_bytes() != content]
     if check and stale:
-        raise RecordError("Notebook pages are stale. Run: python tools/build_record.py")
+        raise RecordError("Notebook files are stale. Run: python tools/build_record.py")
     for path in stale:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(pages[path])
@@ -246,12 +266,12 @@ def write_pages(config: dict, check: bool = False) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--check", action="store_true", help="Validate the record and report stale pages without writing")
+    parser.add_argument("--check", action="store_true", help="Validate the record and report stale files without writing")
     parser.add_argument("--config", type=Path, default=CONFIG, help="Project name and folder locations")
     options = parser.parse_args()
     try:
         stale = write_pages(read_config(options.config.resolve()), options.check)
-        print(f"Record is valid. {stale} notebook page(s) rebuilt.")
+        print(f"Record is valid. {stale} notebook file(s) rebuilt.")
         return 0
     except (RecordError, OSError, UnicodeError) as error:
         print(f"Record build failed: {error}", file=sys.stderr)

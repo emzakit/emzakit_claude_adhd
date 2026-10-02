@@ -175,7 +175,7 @@
     "title": "This repo's notebook is docs/notebook, linked into the Obsidian vault",
     "status": "decided",
     "summary": "This repo's notebook is docs/notebook, a link to the owner's Obsidian folder; it is ignored by git, so the pages and dev-log live in the vault, not in the repo.",
-    "decision": "docs/notebook is a link to the Emzakit_Claude folder in the owner's Obsidian vault. The owner made the link; the repo itself lives in E:\\Coding_Projects\\emzakit_claude_adhd. The link is in .gitignore. Because this repo has no copy of the tools, its two launchers run the template scripts with --config pointing at tools/record-config.json and tools/dev-log-config.json.",
+    "decision": "docs/notebook is a link to a folder in the owner's Obsidian vault. The owner made the link. The link is in .gitignore. Because this repo has no copy of the tools, its launchers run the template scripts with --config pointing at tools/record-config.json and tools/dev-log-config.json.",
     "roadmap": [
       "R-008"
     ],
@@ -195,6 +195,81 @@
     "reason": "A link keeps the pages in Obsidian and the paths in the project short, and it is easy to miss.",
     "roadmap": [
       "R-004"
+    ]
+  },
+  {
+    "id": "D-015",
+    "date": "2026-10-02",
+    "title": "Board cards carry a category, flags and links",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "Cards get one coloured category, any number of flags and a list of links or file paths; the categories and flags live in board.json and the owner manages them from the board.",
+    "decision": "roadmap.json cards gain the optional fields category, flags and links. docs/record/board.json holds the categories and flags with their colours; the starter set is Feature, UI, Bug, Refactor, Docs, Tooling and High, Medium, Low priority. A dialog on the board adds, renames, recolours and removes them. The digest shows each card's category, flags and links.",
+    "reason": "The owner wants to sort and mark cards and to keep the files a card is about one click away.",
+    "alternatives": "Free-text tags typed into the note; detecting links inside the note text.",
+    "roadmap": [
+      "R-013"
+    ],
+    "dev_log": "board-opens-things"
+  },
+  {
+    "id": "D-016",
+    "date": "2026-10-02",
+    "title": "The board opens only safe file types and shows everything else in its folder",
+    "status": "decided",
+    "decided_by": "agent",
+    "summary": "A card link opens only images, PDFs, text and media; folders, programs, web pages and office files are shown in their folder, network paths and symbolic links are refused, and the page never sends a path.",
+    "decision": "The page asks the helper to open a link by card id, position and version; the helper reads the path from roadmap.json on disk. An allow-list decides what the system may open. Anything else, and every folder, is revealed in the file manager. Paths starting with two slashes and, on Windows, paths through a symbolic link are refused before the file system is touched.",
+    "reason": "The independent tester and the security reviewer both showed that handing a folder to Windows to open runs a same-named script beside it, and that web pages and office files opened from a cloned repo can run script or leak credentials.",
+    "alternatives": "Opening anything the system knows how to open; a deny-list of program types; opening folders with a trailing separator, which one reviewer could not prove safe.",
+    "roadmap": [
+      "R-013",
+      "R-017"
+    ],
+    "dev_log": "board-opens-things"
+  },
+  {
+    "id": "D-017",
+    "date": "2026-10-02",
+    "title": "Launchers and assets travel with the tools, for Windows, macOS and Linux",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "The board and dev-log launchers live in tools/ as .bat, .command and .sh with no machine paths, and every build copies the theme and board script from tools/assets into the notebook.",
+    "decision": "open-roadmap and rebuild-dev-log each come as .bat, .command and .sh in tools/ and find the scripts relative to themselves. The notebook's assets folder is generated from tools/assets on every build, so a fresh clone on any machine gets a working notebook from one launcher run. The launchers no longer live in the notebook folder and no path is filled in at set-up.",
+    "reason": "The owner works on Windows and a Mac. A launcher holding one machine's path inside a synced notebook breaks on the other.",
+    "alternatives": "Per-machine launchers generated into the notebook; one launcher per operating system kept in the notebook with paths filled in by hand.",
+    "roadmap": [
+      "R-013",
+      "R-014"
+    ],
+    "dev_log": "board-opens-things"
+  },
+  {
+    "id": "D-018",
+    "date": "2026-10-02",
+    "title": "Hooks run under bash and choose the interpreter once",
+    "status": "decided",
+    "decided_by": "agent",
+    "summary": "Each hook sets shell to bash and runs python3 if it works, else python, so the same hooks.json serves Windows, macOS and Linux without running a script twice.",
+    "decision": "hooks.json commands are `py=python3; python3 -c '' 2>/dev/null || py=python; \"$py\" <script>` with \"shell\": \"bash\". Claude Code runs hooks in Git Bash on Windows.",
+    "reason": "macOS has no `python` command by default, and a fallback that re-runs the script would hide a crash and lose the hook's input.",
+    "alternatives": "`python … || python3 …`, which does not parse in Windows PowerShell 5.1 and runs twice on failure; a Node launcher, which adds a second runtime.",
+    "roadmap": [
+      "R-010"
+    ]
+  },
+  {
+    "id": "D-019",
+    "date": "2026-10-02",
+    "title": "The record digest is treated as data, not instructions",
+    "status": "decided",
+    "decided_by": "agent",
+    "summary": "Everything the digest prints from the record is flattened to one line and cut at 300 characters, and the session-start hook says the digest is project data, because a cloned repo's record reaches the model's context.",
+    "decision": "project_record.py cleans titles, notes, links, names and summaries before printing them. The hook caps error text at 1000 characters and labels the digest as data. A Research card shipped in a cloned repo is still researched without asking; that is how the feature works and is accepted.",
+    "reason": "The security review put a fake system notice into the context through a card title with line breaks, and a 400 kB note through unchanged.",
+    "alternatives": "Leaving the digest raw; refusing multi-line notes in the validator.",
+    "roadmap": [
+      "R-013"
     ]
   }
 ]

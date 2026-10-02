@@ -1,0 +1,36 @@
+/* The roadmap board: page-specific geometry. Shared colours and fonts come from legend-theme.css.
+   --chip is the colour of a category or flag; roadmap-board.js sets it on the node. */
+body { max-width: none; margin: 44px 32px; }
+#board { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; align-items: start; }
+.column { border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-height: 180px; }
+.column.over { border-color: var(--gold); }
+.column h2 { font: 650 17px/1.3 var(--body); letter-spacing: 0; margin: 0 0 12px; }
+.column h2 span { color: var(--muted); font-weight: 400; }
+.card { border: 1px solid var(--line); border-left: 4px solid var(--chip, var(--line)); border-radius: 8px;
+        padding: 12px 14px; margin: 0 0 10px; }
+.card[draggable="true"] { cursor: grab; }
+.card.dragging { opacity: .4; }
+.card h3 { font: 650 15px/1.4 var(--body); margin: 4px 0; }
+.card p { font-size: 14px; line-height: 1.5; margin: 6px 0 0; }
+.card button, .column > button, #manage-open, dialog fieldset button { font-size: 12px; padding: 5px 12px; }
+.card > button, .column > button { margin-top: 10px; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin: 6px 0; font-size: 12px; }
+.chip { color: var(--chip, var(--muted)); border: 1px solid var(--chip, var(--line)); border-radius: 99px; padding: 0 9px; }
+.flag::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 5px; border-radius: 50%;
+                background: var(--chip, var(--muted)); }
+.links { list-style: none; padding: 0; margin: 8px 0 0; font-size: 13px; overflow-wrap: anywhere; }
+.links li { margin: 4px 0; }
+dialog { background: var(--night); color: var(--text); border: 1px solid var(--line); border-radius: 10px;
+         padding: 24px; width: min(520px, 92vw); }
+dialog::backdrop { background: rgba(0, 0, 0, .7); }
+dialog label { display: block; margin: 0 0 14px; font-size: 14px; }
+dialog input, dialog textarea, dialog select { display: block; width: 100%; margin-top: 6px; padding: 10px 12px;
+         border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--heading); }
+dialog textarea { min-height: 110px; font: 15px/1.5 var(--body); }
+dialog fieldset { border: 1px solid var(--line); border-radius: 8px; margin: 0 0 14px; padding: 8px 12px 12px;
+                  font-size: 14px; }
+dialog fieldset label { display: inline-block; margin: 4px 14px 4px 0; }
+dialog input[type="checkbox"] { display: inline; width: auto; margin: 0 6px 0 0; }
+.manage-row { display: flex; gap: 8px; align-items: center; margin: 0 0 8px; }
+.manage-row input { margin-top: 0; }
+.manage-row input[type="color"] { flex: 0 0 48px; height: 40px; padding: 2px; }

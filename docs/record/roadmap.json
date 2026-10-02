@@ -46,7 +46,11 @@
     "title": "First real run: set up the record and notebook in an existing project",
     "status": "todo",
     "date": "2026-10-02",
-    "note": "Verified so far on a demo project only. Watch the set-up steps in NOTEBOOK.md run end to end, including the move from the old Markdown record."
+    "note": "Verified so far on a demo project only. Watch the set-up steps in NOTEBOOK.md run end to end, including the move from the old Markdown record.",
+    "category": "Tooling",
+    "flags": [
+      "Medium priority"
+    ]
   },
   {
     "id": "R-008",
@@ -65,22 +69,88 @@
   {
     "id": "R-010",
     "title": "Hook commands call `python`, which is `python3` on most Linux and macOS machines",
-    "status": "issue",
+    "status": "done",
     "date": "2026-10-02",
-    "note": "Only used on Windows so far."
+    "note": "Hooks now run under bash and pick python3 or python once. See D-018. Untested on a real Mac: R-014.",
+    "category": "Bug"
   },
   {
     "id": "R-011",
     "title": "`build_dev_log.py` is 323 lines with a long main()",
     "status": "issue",
     "date": "2026-10-02",
-    "note": "One cohesive, working builder copied unchanged from Total War Chess; left as it is."
+    "note": "One cohesive, working builder copied unchanged from Total War Chess; left as it is.",
+    "category": "Refactor"
   },
   {
     "id": "R-012",
     "title": "Board cards cannot be dragged on a touch screen",
     "status": "issue",
     "date": "2026-10-02",
-    "note": "Edit, then Column, moves a card without dragging."
+    "note": "Edit, then Column, moves a card without dragging.",
+    "category": "UI"
+  },
+  {
+    "id": "R-013",
+    "title": "Board cards: links and files that open, categories with colours, flags",
+    "status": "done",
+    "date": "2026-10-02",
+    "note": "Built, independently tested, reviewed and security-reviewed. See D-015 to D-019.",
+    "category": "Feature"
+  },
+  {
+    "id": "R-014",
+    "title": "Test on macOS and Linux: launchers, hooks, opening and revealing files",
+    "status": "todo",
+    "date": "2026-10-02",
+    "category": "Tooling",
+    "flags": [
+      "High priority"
+    ],
+    "note": "Nothing has run there yet. On the Mac: pull, double-click tools/open-roadmap.command, drag a card, click an image link and a folder link; then tools/rebuild-dev-log.command; then install the plugin and start a session to see the hooks load."
+  },
+  {
+    "id": "R-015",
+    "title": "A second board change made while a save is still in flight is refused",
+    "status": "issue",
+    "date": "2026-10-02",
+    "category": "Bug",
+    "flags": [
+      "Low priority"
+    ],
+    "note": "The board shows 'Not saved: changed on disk' and reloads; the change has to be made again. A person is rarely that fast."
+  },
+  {
+    "id": "R-016",
+    "title": "A record file broken by hand while the board is open blanks the board",
+    "status": "issue",
+    "date": "2026-10-02",
+    "category": "Bug",
+    "flags": [
+      "Low priority"
+    ],
+    "note": "The helper serves roadmap.json and board.json without validating them on read."
+  },
+  {
+    "id": "R-017",
+    "title": "Links on a mapped network drive are opened like local files",
+    "status": "issue",
+    "date": "2026-10-02",
+    "category": "Bug",
+    "flags": [
+      "Low priority"
+    ],
+    "note": "Only paths that start with two slashes and symbolic links are refused. See D-016."
+  },
+  {
+    "id": "R-018",
+    "title": "`roadmap-board.js` and the test file are over the 300-line smoke alarm",
+    "status": "issue",
+    "date": "2026-10-02",
+    "category": "Refactor",
+    "flags": [
+      "Low priority"
+    ],
+    "note": "Each does one job. The board script's only seam is the Categories and flags dialog, which shares its state with the rest; splitting it now would only pass state back and forth."
   }
 ]
