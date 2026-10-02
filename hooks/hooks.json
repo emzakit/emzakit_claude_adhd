@@ -1,0 +1,42 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/inject_context.py\" SessionStart",
+            "timeout": 10,
+            "statusMessage": "Loading the principles and the project record"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/inject_context.py\" SubagentStart",
+            "timeout": 10,
+            "statusMessage": "Loading the principles"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/check_file_length.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking file length (rule 3)"
+          }
+        ]
+      }
+    ]
+  }
+}

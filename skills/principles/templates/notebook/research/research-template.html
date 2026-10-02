@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{{QUESTION — as short as a headline}}</title>
+    <link rel="stylesheet" href="../assets/legend-theme.css" />
+  </head>
+  <body>
+    <nav>
+      <a href="../index.html">Notebook</a> · <a href="../project-record.html">Project record</a> ·
+      <a href="../roadmap.html">Roadmap</a>
+    </nav>
+    <p class="chapter">{{PROJECT_NAME}} · Research · {{DATE, written out}}</p>
+    <h1>{{The question, in the reader's words}}</h1>
+
+    <div class="notice">
+      <p><strong>Short answer:</strong> {{the recommendation in one or two sentences}}</p>
+      <p>
+        <strong>What it costs:</strong> {{time, money, risk — in real units}}.
+        <strong>What I need from you:</strong> {{the one decision to make}}.
+      </p>
+    </div>
+
+    <nav>
+      <a href="#found">What I found</a> · <a href="#options">The options</a> ·
+      <a href="#issues">Issues and ways round them</a> · <a href="#unknown">Still unknown</a> ·
+      <a href="#sources">Sources</a>
+    </nav>
+
+    <section id="found">
+      <h2>What I found</h2>
+      <p>
+        {{Facts only, each with its source. Say "Found" for what a source or the code shows and
+        "My judgement" for what is inferred. Plain words; explain any term the reader has not used
+        themselves.}}
+      </p>
+    </section>
+
+    <section id="options">
+      <h2>The options</h2>
+      <div class="scroll">
+        <table>
+          <tr>
+            <th>Option</th>
+            <th>What it gives</th>
+            <th>What it costs</th>
+            <th>Hard to undo?</th>
+          </tr>
+          <tr>
+            <td>{{Option — mark the recommended one}}</td>
+            <td>{{…}}</td>
+            <td>{{…}}</td>
+            <td>{{…}}</td>
+          </tr>
+        </table>
+      </div>
+      <p>{{Why the recommended option wins, and what would change the recommendation.}}</p>
+    </section>
+
+    <section id="issues">
+      <h2>Issues and ways round them</h2>
+      <details open>
+        <summary>{{The issue, in one line}}</summary>
+        <p><strong>Why it matters:</strong> {{…}}</p>
+        <p><strong>Ways round it:</strong> {{one or more possible solutions, the preferred one first}}</p>
+      </details>
+    </section>
+
+    <section id="unknown">
+      <h2>Still unknown</h2>
+      <ul>
+        <li>{{What could not be confirmed, and the cheapest way to find out.}}</li>
+      </ul>
+    </section>
+
+    <section id="sources">
+      <h2>Sources</h2>
+      <ul>
+        <li>{{Link — what it was used for, and the date it was read.}}</li>
+      </ul>
+    </section>
+
+    <p class="foot">
+      Research report. A recommendation is not a decision: the decision is recorded in the
+      <a href="../project-record.html">project record</a> once it is made.
+    </p>
+  </body>
+</html>

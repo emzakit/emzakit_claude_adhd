@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{{PROJECT_NAME}} · Development log</title>
+    <link rel="stylesheet" href="../assets/legend-theme.css" />
+    <style>
+      /* Page-specific geometry. There is no banner image by default, so the hero only needs
+         room for its text. To add one, put <img class="landscape" src="../assets/banner.jpg" alt="" />
+         first inside the header and delete these two rules. */
+      .chronicle-hero {
+        min-height: 0;
+      }
+      .hero-copy {
+        padding-bottom: 60px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="chronicle-hero">
+      <div class="sitebar">
+        <a class="project-name" href="../index.html">{{PROJECT_NAME}}</a>
+        <div class="sitelinks">
+          <a href="../project-record.html">Project record</a><a href="../roadmap.html">Roadmap</a
+          ><a href="../ideas-catalogue.html">Ideas</a>
+        </div>
+      </div>
+      <div class="hero-copy">
+        <h1>{{PROJECT_NAME}}<br />Development log</h1>
+        <p>{{PROJECT_TAGLINE}}</p>
+        <div class="hero-actions">
+          <a class="pill" href="#dev-log-entries">Read from the start</a
+          ><a class="pill secondary" id="latest-entry-link" href="#dev-log-entries">Latest entry</a>
+        </div>
+      </div>
+    </header>
+    <div class="wiki-shell">
+      <aside class="wiki-rail">
+        <h2>Entries</h2>
+        <nav id="entry-nav" aria-label="Dev-log entries"></nav>
+        <div class="rail-extra">
+          <p class="rail-label">Status matters</p>
+          <p class="small-link">
+            A proposal is still a proposal until an entry says it was decided, and by whom.
+          </p>
+        </div>
+      </aside>
+      <main class="wiki-content" id="dev-log-entries">
+        <div class="notice">
+          <p>
+            <strong>The decisions, experiments and changes that shape the project.</strong> Each
+            dated entry speaks in the present tense from that point in the project: what changes,
+            how it works and why. The folding note under an entry holds its sources and what is
+            still untested.
+          </p>
+        </div>
+        <div class="search-tools">
+          <label for="dev-log-search"><strong>Find the entry you remember</strong></label
+          ><input
+            id="dev-log-search"
+            type="search"
+            placeholder="Type a word or two…"
+            aria-describedby="dev-log-search-status"
+          />
+          <p id="dev-log-search-status" class="search-status" aria-live="polite">
+            Search every entry and its sources.
+          </p>
+          <button id="clear-search" type="button">Clear search</button>
+        </div>
+
+        <!-- DEV_LOG_ENTRIES -->
+
+        <p class="foot">
+          Built from the numbered Markdown entries by <code>tools/build_dev_log.py</code>. Edit the
+          entries, not this page.
+        </p>
+      </main>
+    </div>
+    <script>
+      (() => {
+        const input = document.getElementById("dev-log-search");
+        const status = document.getElementById("dev-log-search-status");
+        const idle = status.textContent;
+        const units = [...document.querySelectorAll(".search-unit")];
+        const prior = new Map();
+
+        // The rail and the "Latest entry" button are filled from the entries themselves,
+        // so adding an entry never needs a second edit here.
+        const rail = document.getElementById("entry-nav");
+        for (const unit of units) {
+          const link = document.createElement("a");
+          link.href = "#" + unit.id;
+          link.textContent = unit.querySelector("h2").textContent;
+          rail.append(link);
+        }
+        if (units.length) {
+          document.getElementById("latest-entry-link").href = "#" + units[units.length - 1].id;
+        }
+
+        const normal = (text) =>
+          text
+            .toLocaleLowerCase()
+            .normalize("NFKD")
+            .replace(/[̀-ͯ]/g, "");
+        function search() {
+          const words = normal(input.value.trim()).split(/\s+/).filter(Boolean);
+          let shown = 0;
+          for (const unit of units) {
+            const match =
+              !words.length || words.every((word) => normal(unit.textContent).includes(word));
+            unit.hidden = !match;
+            if (!match) continue;
+            shown++;
+            if (words.length) {
+              for (const detail of unit.querySelectorAll("details")) {
+                if (!prior.has(detail)) prior.set(detail, detail.open);
+                detail.open = true;
+              }
+            }
+          }
+          if (!words.length) {
+            for (const [detail, wasOpen] of prior) detail.open = wasOpen;
+            prior.clear();
+          }
+          status.textContent = words.length
+            ? shown + " matching entries. Their source notes are expanded."
+            : idle;
+        }
+        function clear() {
+          input.value = "";
+          search();
+        }
+        input.addEventListener("input", search);
+        document.getElementById("clear-search").addEventListener("click", () => {
+          clear();
+          input.focus();
+        });
+        document.addEventListener("click", (event) => {
+          const link = event.target.closest('a[href^="#"]');
+          if (link && input.value) clear();
+        });
+        function revealHash() {
+          const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+          if (!target) return;
+          if (target.closest("[hidden]")) clear();
+          for (let parent = target.parentElement; parent; parent = parent.parentElement) {
+            if (parent.tagName === "DETAILS") parent.open = true;
+          }
+          target.scrollIntoView({ block: "start" });
+        }
+        window.addEventListener("hashchange", revealHash);
+        if (location.hash) revealHash();
+      })();
+    </script>
+  </body>
+</html>

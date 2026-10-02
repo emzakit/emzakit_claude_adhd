@@ -1,0 +1,86 @@
+[
+  {
+    "id": "R-001",
+    "title": "Package the principles, workflow, agents and hooks as a Claude Code plugin",
+    "status": "done",
+    "date": "2026-10-02",
+    "note": "Replaces the local copy in ~/.claude. See D-001, D-002."
+  },
+  {
+    "id": "R-002",
+    "title": "Dev-log kit: Markdown entries built into one styled page",
+    "status": "done",
+    "date": "2026-10-02",
+    "note": "Taken from the Total War Chess dev-log and de-branded. See D-004."
+  },
+  {
+    "id": "R-003",
+    "title": "Workflow uses i-have-adhd, ponytail, mempalace and ECC",
+    "status": "done",
+    "date": "2026-10-02",
+    "note": "See D-003."
+  },
+  {
+    "id": "R-004",
+    "title": "Record as JSON for agents, notebook pages for the human",
+    "status": "done",
+    "date": "2026-10-02",
+    "note": "See D-006, D-007."
+  },
+  {
+    "id": "R-005",
+    "title": "Roadmap as a board the owner can move cards on",
+    "status": "done",
+    "date": "2026-10-02",
+    "note": "See D-008, D-010."
+  },
+  {
+    "id": "R-006",
+    "title": "Research before major decisions, with an HTML report",
+    "status": "done",
+    "date": "2026-10-02",
+    "note": "See D-009."
+  },
+  {
+    "id": "R-007",
+    "title": "First real run: set up the record and notebook in an existing project",
+    "status": "todo",
+    "date": "2026-10-02",
+    "note": "Verified so far on a demo project only. Watch the set-up steps in NOTEBOOK.md run end to end, including the move from the old Markdown record."
+  },
+  {
+    "id": "R-008",
+    "title": "This repo's own notebook and dev-log",
+    "status": "todo",
+    "date": "2026-10-02",
+    "note": "Waiting on D-013. Commands here use the templates directly: python skills/principles/templates/tools/build_record.py --config tools/record-config.json"
+  },
+  {
+    "id": "R-009",
+    "title": "Choose a licence",
+    "status": "todo",
+    "date": "2026-10-02",
+    "note": "Waiting on D-012."
+  },
+  {
+    "id": "R-010",
+    "title": "Hook commands call `python`, which is `python3` on most Linux and macOS machines",
+    "status": "issue",
+    "date": "2026-10-02",
+    "note": "Only used on Windows so far."
+  },
+  {
+    "id": "R-011",
+    "title": "`build_dev_log.py` is 323 lines with a long main()",
+    "status": "issue",
+    "date": "2026-10-02",
+    "note": "One cohesive, working builder copied unchanged from Total War Chess; left as it is."
+  },
+  {
+    "id": "R-012",
+    "title": "Board cards cannot be dragged on a touch screen",
+    "status": "issue",
+    "date": "2026-10-02",
+    "note": "Edit, then Column, moves a card without dragging."
+  }
+]

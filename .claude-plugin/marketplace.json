@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "emzakit",
+  "description": "Engineering principles, the principled build workflow and a per-project dev-log.",
+  "owner": {
+    "name": "emzakit",
+    "url": "https://github.com/emzakit"
+  },
+  "plugins": [
+    {
+      "name": "emzakit",
+      "description": "Always-on engineering principles plus /emzakit:principles, the principled build workflow.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

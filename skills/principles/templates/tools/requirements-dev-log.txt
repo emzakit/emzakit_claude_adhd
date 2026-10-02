@@ -1,0 +1,4 @@
+# Static documentation builder only; no runtime dependencies.
+beautifulsoup4>=4.13,<5
+markdown-it-py>=4,<5
+PyYAML>=6,<7

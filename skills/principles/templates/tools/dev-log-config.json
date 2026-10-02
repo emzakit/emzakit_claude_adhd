@@ -1,0 +1,8 @@
+{
+  "entries": "../docs/notebook/dev-log/markdown",
+  "template": "../docs/notebook/dev-log/dev-log-template.html",
+  "source_docs": "../docs/notebook/dev-log",
+  "outputs": [
+    "../docs/notebook/dev-log/dev-log.html"
+  ]
+}

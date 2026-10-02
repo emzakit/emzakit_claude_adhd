@@ -1,0 +1,6 @@
+{
+  "project": "emzakit",
+  "tagline": "Engineering principles, a principled build workflow and a project record for Claude Code.",
+  "record": "../docs/record",
+  "notebook": "../docs/notebook"
+}

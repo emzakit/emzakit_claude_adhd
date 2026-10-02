@@ -1,0 +1,21 @@
+[
+  {
+    "id": "IDEA-001",
+    "date": "2026-10-02",
+    "origin": "agent",
+    "status": "parked",
+    "title": "Research the moment a card is dropped",
+    "summary": "The board could start a headless Claude run when a card lands in Research, so the report appears without opening a session.",
+    "source": "Offered while designing the Research column; the owner chose research at the next session instead (D-009).",
+    "checkpoint": "Revisit if waiting for the next session turns out to be too slow."
+  },
+  {
+    "id": "IDEA-002",
+    "date": "2026-10-02",
+    "origin": "agent",
+    "status": "open",
+    "title": "Archive old diary entries",
+    "summary": "When record.json grows past a few hundred entries, move the oldest into a yearly archive file that the digest skips and the page still shows.",
+    "checkpoint": "The digest no longer fits in one screen, or the session-start hook becomes slow."
+  }
+]

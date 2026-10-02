@@ -1,0 +1,179 @@
+[
+  {
+    "id": "D-001",
+    "date": "2026-10-02",
+    "title": "One plugin, called emzakit",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "The local mundhir-principles skill, rules, agents and hooks become one plugin named emzakit; the workflow is /emzakit:principles.",
+    "decision": "The skill, the rules file, the four agents and the two hooks that lived in ~/.claude are packaged as one Claude Code plugin in the repo emzakit/emzakit_claude_adhd. Plugin and marketplace are both named emzakit; the skill is named principles.",
+    "reason": "One install on any machine instead of five hand-copied pieces.",
+    "alternatives": "Keeping the name mundhir-principles; a plugin named after the repo.",
+    "roadmap": [
+      "R-001"
+    ]
+  },
+  {
+    "id": "D-002",
+    "date": "2026-10-02",
+    "title": "The rules arrive through hooks",
+    "status": "decided",
+    "decided_by": "agent",
+    "summary": "RULES.md is injected by one hook script on SessionStart and SubagentStart, because a plugin cannot install a file into ~/.claude/rules and SessionStart context never reaches subagents.",
+    "decision": "hooks/inject_context.py prints skills/principles/RULES.md as additional context on SessionStart and on SubagentStart. On SessionStart it also prints the record digest and any missing companion plugins.",
+    "reason": "The rules must be in force in every session and every subagent without a second copy to keep in step.",
+    "alternatives": "An install script that copies the rules into ~/.claude/rules; rejected because it leaves two copies.",
+    "roadmap": [
+      "R-001"
+    ]
+  },
+  {
+    "id": "D-003",
+    "date": "2026-10-02",
+    "title": "Companion plugins are used when installed, reported when missing",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "i-have-adhd, ponytail, mempalace and ECC each have a named step in the workflow; a missing one is reported once with its install command and never blocks work.",
+    "decision": "The skill names the step where each companion is used and the fallback without it. The session-start hook lists the ones not installed.",
+    "reason": "One broken or absent plugin should not stop all work.",
+    "alternatives": "A hard requirement; copying their content into this repo.",
+    "roadmap": [
+      "R-003"
+    ]
+  },
+  {
+    "id": "D-004",
+    "date": "2026-10-02",
+    "title": "Every project gets a dev-log",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "Each project has a dev-log: numbered Markdown entries for decisions and milestones only, built into one HTML page by a builder copied into the project's tools folder.",
+    "decision": "The dev-log kit from Total War Chess is the template: Markdown entries with id, date, status and title, a Python builder, a de-branded page and the legend theme. Entries are written for decisions, changes of direction, experiment results and milestones, not for routine tasks. The builder is copied into each project so it works by double-click and without Claude.",
+    "reason": "Nothing told the story of why in a form worth reading.",
+    "alternatives": "Markdown only; one builder kept inside the plugin; an entry for every task.",
+    "roadmap": [
+      "R-002"
+    ]
+  },
+  {
+    "id": "D-005",
+    "date": "2026-10-02",
+    "title": "The notebook folder is asked for once per project",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "Set-up asks where the human-facing notebook lives (docs/notebook by default, or an Obsidian vault) and stores the answer in the two tools config files.",
+    "decision": "The location is a set-up question, never a guess. tools/record-config.json and tools/dev-log-config.json record it.",
+    "reason": "Some projects keep their notebook in the repo and others in an Obsidian vault.",
+    "alternatives": "Always docs/dev-log; always a notebook symlink.",
+    "roadmap": [
+      "R-002",
+      "R-004"
+    ]
+  },
+  {
+    "id": "D-006",
+    "date": "2026-10-02",
+    "title": "HTML for the human, JSON for agents, one source of truth",
+    "status": "decided",
+    "decided_by": "agent",
+    "summary": "docs/record/*.json is the single source of truth, validated and cross-referenced by id; the human's HTML pages are generated from it and never edited.",
+    "decision": "The owner asked for clean HTML for themselves and whatever parses best for agents, and left the design open. The record is three JSON arrays (record, roadmap, ideas) checked by tools/project_record.py; tools/build_record.py renders the notebook pages from them. Both use only the standard library.",
+    "reason": "Two hand-written copies drift; one validated source with a generated view cannot.",
+    "alternatives": "Markdown for both audiences; hand-written HTML with a separate JSON index.",
+    "roadmap": [
+      "R-004"
+    ]
+  },
+  {
+    "id": "D-007",
+    "date": "2026-10-02",
+    "title": "No handover and no changelog; the record is a diary of decisions",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "Handover and changelog are removed: git holds what changed, record.json holds decisions, reversals and open questions with one-line summaries, and board cards hold status and next steps.",
+    "decision": "The project record is a diary of decisions, reversals and why. Each entry has a summary of at most 240 characters so an agent can skim the whole history through the digest. Where work stands lives in the note of its board card; questions for the owner are open entries; things noticed become issue cards or ideas.",
+    "reason": "The handover got confusing, and five documents said overlapping things.",
+    "alternatives": "Keeping the changelog as an agent-only file or as a page.",
+    "roadmap": [
+      "R-004"
+    ]
+  },
+  {
+    "id": "D-008",
+    "date": "2026-10-02",
+    "title": "The roadmap is a board with a double-click launcher",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "The roadmap is a kanban board the owner edits in the browser; open-roadmap.bat starts a localhost-only helper that writes card moves straight into roadmap.json.",
+    "decision": "roadmap.html draws the cards. tools/roadmap_board.py serves the notebook on 127.0.0.1 with a random port and token, checks the Host header, validates every save against the whole record and refuses a save if the file changed on disk. Opened as a plain file the board is read-only.",
+    "reason": "The owner wants to move cards themselves, and a browser page cannot save a file on its own.",
+    "alternatives": "Picking the file in the browser each session (Chrome and Edge only); a static table.",
+    "roadmap": [
+      "R-005"
+    ]
+  },
+  {
+    "id": "D-009",
+    "date": "2026-10-02",
+    "title": "Research is offered before major decisions and automatic for Research cards",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "Before a major decision the agent asks whether to research it; a card in the board's Research column is researched at the next session without asking. The result is an HTML report plus an open entry.",
+    "decision": "Rule 9 and RESEARCH.md. A report gives the short answer first, findings with sources, options side by side, each issue with ways round it, and what is still unknown. It ends in a question for the owner, never in a decision.",
+    "reason": "Major decisions should rest on evidence the owner can read, not on what the agent already believed.",
+    "alternatives": "Research always, without asking; research only on request; a background run the moment a card is dropped (IDEA-001).",
+    "roadmap": [
+      "R-006"
+    ]
+  },
+  {
+    "id": "D-010",
+    "date": "2026-10-02",
+    "title": "Issues column holds known problems; nothing there is fixed unasked",
+    "status": "decided",
+    "decided_by": "agent",
+    "summary": "The board's Issues column lists known problems; agents file what they notice there but fix one only when asked or when its card is moved to To do.",
+    "decision": "The owner asked for an issues area on the board. Agents add issue cards for problems they notice outside the task (rule 5) and leave them alone.",
+    "reason": "Rule 5: change only what was asked. An issue list that fixes itself would grow every task's scope.",
+    "alternatives": "Fixing issues automatically at session start, like Research cards.",
+    "roadmap": [
+      "R-005"
+    ]
+  },
+  {
+    "id": "D-011",
+    "date": "2026-10-02",
+    "title": "The owner's writer's-voice file ships with the plugin",
+    "status": "decided",
+    "decided_by": "user",
+    "summary": "The full writer's-voice file is published in the plugin and dev-log entries follow it; the Total War Chess banner art and entries are not included.",
+    "decision": "skills/principles/writers-voice.md is the owner's file, unchanged. The page template is de-branded and uses the legend theme without artwork.",
+    "reason": "Every project's dev-log should sound like its owner.",
+    "alternatives": "A short list of voice rules only; a neutral theme.",
+    "roadmap": [
+      "R-002"
+    ]
+  },
+  {
+    "id": "D-012",
+    "date": "2026-10-02",
+    "title": "Which licence, if any?",
+    "status": "open",
+    "summary": "Open: the repo is public and has no licence file, so nobody else may legally reuse it. Choose one (MIT is the usual permissive choice) or leave it all-rights-reserved.",
+    "decision": "Option A: MIT. Option B: another licence. Option C: no licence; the code stays visible but not reusable.",
+    "roadmap": [
+      "R-009"
+    ]
+  },
+  {
+    "id": "D-013",
+    "date": "2026-10-02",
+    "title": "Where does this repo's own notebook live?",
+    "status": "open",
+    "summary": "Open: this repo has the JSON record but no notebook pages or dev-log yet, because the folder is the owner's choice and the first dev-log entry speaks in their voice.",
+    "decision": "Option A: docs/notebook in this repo. Option B: a folder in the Obsidian vault. Then entry 001 is written and shown for correction.",
+    "roadmap": [
+      "R-008"
+    ]
+  }
+]

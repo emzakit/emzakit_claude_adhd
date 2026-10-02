@@ -1,0 +1,10 @@
+{
+  "name": "emzakit",
+  "version": "1.0.0",
+  "description": "Engineering principles and the principled build workflow: plan, modular build, independent test, review, security, then the project record and dev-log.",
+  "author": {
+    "name": "emzakit",
+    "url": "https://github.com/emzakit"
+  },
+  "repository": "https://github.com/emzakit/emzakit_claude_adhd"
+}

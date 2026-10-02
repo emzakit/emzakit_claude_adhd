@@ -1,0 +1,6 @@
+{
+  "project": "{{PROJECT_NAME}}",
+  "tagline": "{{PROJECT_TAGLINE}}",
+  "record": "../docs/record",
+  "notebook": "../docs/notebook"
+}
