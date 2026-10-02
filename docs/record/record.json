@@ -11,7 +11,8 @@
     "alternatives": "Keeping the name mundhir-principles; a plugin named after the repo.",
     "roadmap": [
       "R-001"
-    ]
+    ],
+    "dev_log": "start"
   },
   {
     "id": "D-002",
@@ -171,13 +172,17 @@
   {
     "id": "D-013",
     "date": "2026-10-02",
-    "title": "Where does this repo's own notebook live?",
-    "status": "open",
-    "summary": "Open: this repo has the JSON record but no notebook pages or dev-log yet, because the folder is the owner's choice and the first dev-log entry speaks in their voice.",
-    "decision": "Option A: docs/notebook in this repo. Option B: a folder in the Obsidian vault. Then entry 001 is written and shown for correction.",
+    "title": "This repo's notebook is docs/notebook, linked into the Obsidian vault",
+    "status": "decided",
+    "summary": "This repo's notebook is docs/notebook, a link to the owner's Obsidian folder; it is ignored by git, so the pages and dev-log live in the vault, not in the repo.",
+    "decision": "docs/notebook is a link to the Emzakit_Claude folder in the owner's Obsidian vault. The owner made the link; the repo itself lives in E:\\Coding_Projects\\emzakit_claude_adhd. The link is in .gitignore. Because this repo has no copy of the tools, its two launchers run the template scripts with --config pointing at tools/record-config.json and tools/dev-log-config.json.",
     "roadmap": [
       "R-008"
-    ]
+    ],
+    "decided_by": "user",
+    "reason": "The owner reads their notes in Obsidian, as with Total War Chess.",
+    "alternatives": "A plain docs/notebook folder committed with the repo.",
+    "dev_log": "start"
   },
   {
     "id": "D-014",

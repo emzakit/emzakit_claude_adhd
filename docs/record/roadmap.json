@@ -51,9 +51,9 @@
   {
     "id": "R-008",
     "title": "This repo's own notebook and dev-log",
-    "status": "todo",
+    "status": "done",
     "date": "2026-10-02",
-    "note": "Waiting on D-013. Commands here use the templates directly: python skills/principles/templates/tools/build_record.py --config tools/record-config.json"
+    "note": "Notebook pages and dev-log entry 001 built. See D-013."
   },
   {
     "id": "R-009",

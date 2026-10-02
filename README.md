@@ -71,10 +71,24 @@ The record tools need only the Python standard library. The dev-log builder need
 
 ## Working on this repo
 
-This repo keeps its own record in `docs/record/`. It has no copy of the tools; run the templates directly:
+This repo keeps its own record in `docs/record/`. Its notebook, `docs/notebook`, is a link into the owner's Obsidian vault and is not committed. It has no copy of the tools; run the templates directly, naming this repo's configs.
+
+The digest:
 
 ```bash
 python skills/principles/templates/tools/project_record.py --config tools/record-config.json
+```
+
+The notebook pages:
+
+```bash
+python skills/principles/templates/tools/build_record.py --config tools/record-config.json
+```
+
+The dev-log:
+
+```bash
+python skills/principles/templates/tools/build_dev_log.py --config tools/dev-log-config.json
 ```
 
 ## Uninstall
